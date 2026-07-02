@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-5" style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
+
+    <!-- Hero Section -->
+    <div class="text-center py-5">
+        <h1 class="display-4">Welcome to Nailz Galore</h1>
+
+        <!-- Image Below Heading -->
+    <img src="{{ url_for('static', filename='images/banner.jpg') }}" 
+         alt="Nailz Galore Banner" 
+        class="img-fluid rounded shadow my-4"
+        style="width: 100%; height: auto; max-width: 600px;">
+
+        <p class="lead">Where beauty meets precision. Book your next appointment today!</p>
+        <p class="lead">📍 Next to Love of Home Kalingalinga</p>
+    </div>
+
+    <!-- Instagram Gallery -->
+    <h2 class="mt-5 mb-4 text-center fw-semibold">Instagram Gallery</h2>
+    <div class="row g-3 mb-3">
+        {% for i in range(1, 7) %}
+        <div class="col-6 col-md-4">
+            <img src="{{ url_for('static', filename='images/gallery' ~ i ~ '.jpg') }}"
+                 alt="Gallery Image {{ i }}"
+                 class="img-fluid rounded shadow-sm"
+                 style="object-fit: cover; width: 100%; height: 250px;">
+        </div>
+        {% endfor %}
+    </div>
+    <div class="d-flex flex-column align-items-center mb-4">
+    <a href="https://www.instagram.com/nailsz_galore" target="_blank" class="btn btn-outline-dark">
+        <i class="fab fa-instagram me-1"></i> View More
+    </a>
+    <a href="https://wa.me/260776282182" target="_blank" class="btn btn-outline-dark">
+        <i class="fab fa-whatsapp me-1"></i> Contact Us
+    </a>
+</div>
+
+    <!-- Services Preview -->
+    <h2 class="mt-5 mb-4 text-center">Our Services</h2>
+    <div class="row">
+        {% for service in services %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 d-flex flex-row align-items-center p-2">
+                {% if service.image_url %}
+                <img src="{{ url_for('static', filename=service.image_url) }}"
+                     alt="{{ service.name }}"
+                     class="img-thumbnail me-3"
+                     style="width: 100px; height: 100px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body p-0">
+                    <h5 class="card-title mb-1">{{ service.name }}</h5>
+                    <p class="card-text small text-muted">{{ service.description[:100] }}...</p>
+                    <p class="fw-bold">K{{ '%.2f'|format(service.price) }}</p>
+                    <a href="{{ url_for('views.book_service', service_id=service.id) }}" class="btn btn-sm btn-outline-primary">Book Now</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

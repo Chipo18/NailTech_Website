@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 800px;">
+    <h2 class="mb-4 text-center">My Bookings</h2>
+
+    {% if bookings %}
+        <div class="list-group">
+            {% for booking in bookings %}
+            <div class="list-group-item list-group-item-action mb-3 shadow-sm rounded">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1">{{ booking.service.name }}</h5>
+                        <small class="text-muted">{{ booking.date_time.strftime('%A, %d %b %Y at %I:%M %p') }}</small>
+                        <p class="mb-1">{{ booking.contact_info }}</p>
+                    </div>
+                    <form action="{{ url_for('views.cancel_booking', booking_id=booking.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                        <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-muted">You have no bookings yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

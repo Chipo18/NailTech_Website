@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Book {{ service.name }}{% endblock %}
+
+{% block content %}
+<div class="container my-4" style="max-width: 600px;">
+  <h2 class="mb-4">{{ service.name }}</h2>
+
+  <p><strong>Description:</strong> {{ service.description }}</p>
+  <p><strong>Price:</strong> K{{ '%.2f' | format(service.price) }}</p>
+  {% if service.duration %}
+  <p><strong>Duration:</strong> {{ service.duration }} minutes</p>
+  {% endif %}
+  
+  <form method="POST" id="bookingForm" onsubmit="return checkPolicyAccepted()">
+    <div class="mb-3">
+      <label for="date" class="form-label">Select Date</label>
+      <input 
+        type="date" 
+        id="date" 
+        name="date" 
+        class="form-control" 
+        required
+        value="{{ date }}"
+      >
+    </div>
+
+    <div class="mb-3">
+      <label for="time_slot" class="form-label">Available Time Slots</label>
+      <select id="time_slot" name="time_slot" class="form-select" required>
+        {% if available_slots %}
+          {% for slot in available_slots %}
+            <option value="{{ slot }}">{{ slot }}</option>
+          {% endfor %}
+        {% else %}
+          <option disabled>No available time slots</option>
+        {% endif %}
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="contact_info" class="form-label">Contact Info(Call or WhatsApp)</label>
+      <input type="text" id="contact_info" name="contact_info" class="form-control" required>
+    </div>
+
+    <div class="policy-box border rounded p-3 mb-3" style="background-color: #f8f9fa;">
+      <h5>Policy</h5>
+      <ul>
+        <li>Delay of up to 15 minutes attracts a fee.</li>
+        <li>Delay of 20 minutes results in cancellation.</li>
+        <li>If you would like to cancel an appointment kindly communicate at least 2 hours before.</li>
+        <li>If you would like to reschedule kindly do so at least 2 hours before appointment.If not you will be required to send in a new security deposit for a new appointment.</li>
+        <li>The security deposit is non refundable.Exception if the inconvenience has been cause be me (the nail tech).</li>
+      </ul>
+    </div>
+
+    <div class="form-check mb-4">
+      <input type="checkbox" id="policyCheck" class="form-check-input" />
+      <label for="policyCheck" class="form-check-label">
+        I have read and accept the booking policy.
+      </label>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Confirm Booking</button>
+  </form>
+</div>
+
+<!-- Optional modal reminder if checkbox not checked -->
+<div class="modal fade" id="policyReminderModal" tabindex="-1" aria-labelledby="policyReminderLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="policyReminderLabel">Please Accept the Booking Policy</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        You must accept the booking policy before confirming your booking.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function checkPolicyAccepted() {
+    const checkbox = document.getElementById('policyCheck');
+    if (!checkbox.checked) {
+      const modal = new bootstrap.Modal(document.getElementById('policyReminderModal'));
+      modal.show();
+      return false;  // Prevent form submission
+    }
+    return true;
+  }
+
+  // Reload page with new date query param on date change
+  document.getElementById('date').addEventListener('change', function() {
+    const selectedDate = this.value;
+    const url = new URL(window.location.href);
+    url.searchParams.set('date', selectedDate);
+    window.location.href = url.toString();
+  });
+</script>
+{% endblock %}

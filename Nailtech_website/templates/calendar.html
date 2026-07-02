@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Calendar View{% endblock %}
+
+{% block content %}
+<h2>Booking Calendar</h2>
+<div id='calendar'></div>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.7/index.global.min.js'></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('calendar');
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    events: '/api/bookings',  // The API endpoint we created
+    eventClick: function(info) {
+      info.jsEvent.preventDefault(); // prevent browser from following URL
+      if (info.event.url) {
+        window.location.href = info.event.url;  // redirect to booking list or detail
+      }
+    } 
+  });
+  calendar.render();
+});
+</script>
+
+<style>
+  #calendar {
+    max-width: 900px;
+    margin: 40px auto;
+  }
+</style>
+{% endblock %}
